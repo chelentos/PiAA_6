@@ -1,4 +1,4 @@
-#include "Korasik.h"
+#include "Corasick.h"
 
 int main() {
    Bohr bohr;
@@ -11,9 +11,14 @@ int main() {
    cin >> pattern;
    cout << "Enter joker: ";
    cin >> joker;
-   bohr.add_parts_to_bohr(pattern, joker);
-   bohr.find_all_pos(text);
-   bohr.joker_case_results(text.size(), pattern.size());
-   bohr.PrintJokerCaseResaults();
+   try {
+      bohr.add_parts_to_bohr(pattern, joker);
+      bohr.find_all_pos(text);
+      bohr.joker_case_results(text.size(), pattern.size());
+      bohr.PrintJokerCaseResaults();
+   }
+   catch (exception& ex) {
+		cout << ex.what();
+	}
    return 0;
 }

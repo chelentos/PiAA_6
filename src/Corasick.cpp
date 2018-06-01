@@ -1,21 +1,23 @@
-#include "Korasik.h"
+#include "Corasick.h"
 
-char detect_pos(const char& ch) {
-    switch(ch) {
-          case 'A':
-            return 0;
-          case 'C':
-            return 1;
-          case 'G':
-            return 2;
-          case 'T':
-            return 3;
-          case 'N':
-            return 4;
-    }
-}
+   char detect_pos(const char& ch) {
+       switch(ch) {
+             case 'A':
+               return 0;
+             case 'C':
+               return 1;
+             case 'G':
+               return 2;
+             case 'T':
+               return 3;
+             case 'N':
+               return 4;
+       }
+       
+       throw invalid_argument("No symbol " + to_string(ch) + " in alphabet!");
+   }
 
-bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
+   bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
       bohr_vrtx v;
       v.next_vrtx = vector<int>(alphabet.size(), -1);
       v.auto_move = vector<int>(alphabet.size(), -1);
@@ -52,7 +54,7 @@ bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
       for (unsigned int i = 0; i < s.length(); ++i) {
          char ch = detect_pos(s[i]);
          if (bohr[num].next_vrtx[ch] == -1) {
-            return false;         
+               return false;         
             }
          num=bohr[num].next_vrtx[ch];
       }
@@ -60,34 +62,45 @@ bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
    }
    
    int Bohr::get_suff_link(int v) {
-      if (bohr[v].suff_link == -1) //если еще не считали
-         if (v == 0 || bohr[v].par == 0) //если v - корень или предок v - корень
+      if (bohr[v].suff_link == -1) {
+         if (v == 0 || bohr[v].par == 0) {
             bohr[v].suff_link = 0;
-         else
+         }
+         else {
             bohr[v].suff_link = get_auto_move(get_suff_link(bohr[v].par), detect_pos(bohr[v].symb));
+         }
+      }
+         
       return bohr[v].suff_link;
    }
 
    int Bohr::get_good_suff_link(int v) { 
       if (bohr[v].good_suff_link == -1) {
          int  u = get_suff_link(v);
-         if (u == 0) //либо v - корень, либо суф. ссылка v указывает на корень 
+         if (u == 0) {
             bohr[v].good_suff_link = 0;
-         else
+         }
+         else {
             bohr[v].good_suff_link = (bohr[u].flag) ? u : get_good_suff_link(u);
+         }
       }
       return bohr[v].good_suff_link;
    }
  
    int Bohr::get_auto_move(int v, char ch) {
-      if (bohr[v].auto_move[ch] == -1)
-         if (bohr[v].next_vrtx[ch] != -1)
+      if (bohr[v].auto_move[ch] == -1) {
+         if (bohr[v].next_vrtx[ch] != -1) {
             bohr[v].auto_move[ch] = bohr[v].next_vrtx[ch];
-         else
-            if (v == 0)
+         }
+         else {
+            if (v == 0) {
                bohr[v].auto_move[ch] = 0;
-            else
+            }
+            else {
                bohr[v].auto_move[ch] = get_auto_move(get_suff_link(v), ch);
+            }
+         }
+      }
       return bohr[v].auto_move[ch];
    }
    
@@ -136,7 +149,17 @@ bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
       }
 
    }
-
+   
+   vector<int> Bohr::GetJokerCaseResaults() {
+      vector<int> results;
+      for(unsigned int i = 0; i < jokers_case.size(); ++i) {
+        if(jokers_case[i] == pattern.size())
+            results.push_back(i+1);
+      }
+      
+      return results;
+   }
+   
    void Bohr::PrintDefaultResaults() {
       for(unsigned int i = 0; i < indexes.size(); ++i) {
          cout << indexes[i] + 1 << " " << pattern_nums[i] + 1 << endl;
@@ -148,4 +171,12 @@ bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
         if(jokers_case[i] == pattern.size())
             cout << i + 1 << endl;
       }
+   }
+   
+   vector<int> Bohr::GetIndexes() {
+      return indexes;
+   }
+   
+   vector<int> Bohr::GetPatternNums() {
+      return pattern_nums;
    }
