@@ -84,7 +84,7 @@ private:
    
    vector<string> pattern;
    
-   vector<int> jokers_case;
+   vector<unsigned int> jokers_case;
    
    vector<int> jokers_case_indexes;
    
