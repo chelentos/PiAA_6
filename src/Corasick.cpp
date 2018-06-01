@@ -14,7 +14,7 @@
                return 4;
        }
        
-       throw invalid_argument("No symbol " + to_string(ch) + " in alphabet!");
+       throw invalid_argument(string("No symbol <") + ch + "> in alphabet");
    }
 
    bohr_vrtx Bohr::make_bohr_vrtx(int p, char c) {
